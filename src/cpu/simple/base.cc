@@ -166,6 +166,11 @@ BaseSimpleCPU::countFetchInst()
     if (!curStaticInst->isMicroop() || curStaticInst->isLastMicroop()) {
         // increment thread level numInsts fetched count
         fetchStats[t_info.thread->threadId()]->numInsts++;
+
+        // User-mode instructions
+        if (getContext(t_info.thread->threadId())->getIsaPtr()->inUserMode()) {
+            fetchStats[t_info.thread->threadId()]->numUserInsts++;
+        }
     }
     // increment thread level numOps fetched count
     fetchStats[t_info.thread->threadId()]->numOps++;
@@ -180,6 +185,12 @@ BaseSimpleCPU::countCommitInst()
         // increment thread level and core level numInsts count
         commitStats[t_info.thread->threadId()]->numInsts++;
         baseStats.numInsts++;
+
+        // User-mode instructions
+        if (getContext(t_info.thread->threadId())->getIsaPtr()->inUserMode()) {
+            commitStats[t_info.thread->threadId()]->numUserInsts++;
+            baseStats.numUserInsts++;
+        }
     }
     // increment thread level numOps count
     commitStats[t_info.thread->threadId()]->numOps++;

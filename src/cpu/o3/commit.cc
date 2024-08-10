@@ -1341,6 +1341,12 @@ Commit::updateComInstStats(const DynInstPtr &inst)
     if (!inst->isMicroop() || inst->isLastMicroop()) {
         cpu->commitStats[tid]->numInsts++;
         cpu->baseStats.numInsts++;
+
+        // User-mode Instruction
+        if (cpu->getContext(tid)->getIsaPtr()->inUserMode()) {
+            cpu->commitStats[tid]->numUserInsts++;
+            cpu->baseStats.numUserInsts++;
+        }
     }
     cpu->commitStats[tid]->numOps++;
 

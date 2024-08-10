@@ -413,6 +413,10 @@ BaseCPU::probeInstCommit(const StaticInstPtr &inst, Addr pc)
 BaseCPU::
 BaseCPUStats::BaseCPUStats(statistics::Group *parent)
     : statistics::Group(parent),
+      ADD_STAT(numUserInsts, statistics::units::Count::get(),
+               "Number of user-mode instructions executed"),
+      ADD_STAT(numKernelInsts, statistics::units::Count::get(),
+               "Number of kernel-mode instructions executed"),
       ADD_STAT(numCycles, statistics::units::Cycle::get(),
                "Number of cpu cycles simulated"),
       ADD_STAT(cpi, statistics::units::Rate<
@@ -431,6 +435,8 @@ BaseCPUStats::BaseCPUStats(statistics::Group *parent)
 
     ipc.precision(6);
     ipc = numInsts / numCycles;
+
+    numKernelInsts = numInsts - numUserInsts;
 }
 
 void
@@ -887,6 +893,10 @@ FetchCPUStats::FetchCPUStats(statistics::Group *parent, int thread_id)
              "Number of instructions fetched (thread level)"),
     ADD_STAT(numOps, statistics::units::Count::get(),
              "Number of ops (including micro ops) fetched (thread level)"),
+    ADD_STAT(numUserInsts, statistics::units::Count::get(),
+             "Number of user-mode instructions fetched"),
+    ADD_STAT(numKernelInsts, statistics::units::Count::get(),
+             "Number of kernel-mode instructions fetched"),
     ADD_STAT(fetchRate, statistics::units::Rate<
              statistics::units::Count, statistics::units::Cycle>::get(),
              "Number of inst fetches per cycle"),
@@ -912,6 +922,7 @@ FetchCPUStats::FetchCPUStats(statistics::Group *parent, int thread_id)
     icacheStallCycles
         .prereq(icacheStallCycles);
 
+    numKernelInsts = numInsts - numUserInsts;
 }
 
 // means it is incremented in a vector indexing and not directly
@@ -928,6 +939,10 @@ ExecuteCPUStats::ExecuteCPUStats(statistics::Group *parent, int thread_id)
              "Number of load instructions executed"),
     ADD_STAT(numStoreInsts, statistics::units::Count::get(),
              "Number of stores executed"),
+    ADD_STAT(numUserInsts, statistics::units::Count::get(),
+            "Number of user-mode instructions executed"),
+    ADD_STAT(numKernelInsts, statistics::units::Count::get(),
+            "Number of kernel-mode instructions executed"),
     ADD_STAT(instRate, statistics::units::Rate<
                 statistics::units::Count, statistics::units::Cycle>::get(),
              "Inst execution rate"),
@@ -970,6 +985,7 @@ ExecuteCPUStats::ExecuteCPUStats(statistics::Group *parent, int thread_id)
              "commit")
 {
     numStoreInsts = numMemRefs - numLoadInsts;
+    numKernelInsts = numInsts - numUserInsts;
 
     dcacheStallCycles
         .prereq(dcacheStallCycles);
@@ -1032,6 +1048,10 @@ CommitCPUStats::CommitCPUStats(statistics::Group *parent, int thread_id)
             "Number of store instructions"),
     ADD_STAT(numVecInsts, statistics::units::Count::get(),
             "Number of vector instructions"),
+    ADD_STAT(numUserInsts, statistics::units::Count::get(),
+            "Number of user-mode instructions"),
+    ADD_STAT(numKernelInsts, statistics::units::Count::get(),
+            "Number of kernel-mode instructions"),
     ADD_STAT(committedInstType, statistics::units::Count::get(),
             "Class of committed instruction."),
     ADD_STAT(committedControl, statistics::units::Count::get(),
@@ -1042,6 +1062,8 @@ CommitCPUStats::CommitCPUStats(statistics::Group *parent, int thread_id)
 
     cpi.precision(6);
     ipc.precision(6);
+
+    numKernelInsts = numInsts - numUserInsts;
 
     committedInstType
         .init(enums::Num_OpClass)

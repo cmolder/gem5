@@ -639,6 +639,9 @@ class BaseCPU : public ClockedObject
         // Number of CPU insts and ops committed at CPU core level
         statistics::Scalar numInsts;
         statistics::Scalar numOps;
+        // Number of user/kernel-mode instructions commited at CPU core level
+        statistics::Scalar numUserInsts;
+        statistics::Formula numKernelInsts;
         // Number of CPU cycles simulated
         statistics::Scalar numCycles;
         /* CPI/IPC for total cycle counts and macro insts */
@@ -699,6 +702,12 @@ class BaseCPU : public ClockedObject
         /* Total number of operations fetched */
         statistics::Scalar numOps;
 
+        /* Total number of user-mode instructions fetched */
+        statistics::Scalar numUserInsts;
+
+        /* Total number of kernel-mode instructions fetched */
+        statistics::Formula numKernelInsts;
+
         /* Number of instruction fetched per cycle. */
         statistics::Formula fetchRate;
 
@@ -730,6 +739,11 @@ class BaseCPU : public ClockedObject
         statistics::Scalar numLoadInsts;
         /* Number of executed store instructions */
         statistics::Formula numStoreInsts;
+        /* Number of executed user-mode instructions */
+        statistics::Scalar numUserInsts;
+        /* Number of executed kernel-mode instructions */
+        statistics::Formula numKernelInsts;
+
         /* Number of instructions executed per cycle */
         statistics::Formula instRate;
 
@@ -809,6 +823,12 @@ class BaseCPU : public ClockedObject
 
         /* Number of vector instructions */
         statistics::Scalar numVecInsts;
+
+        /* Number of user-mode instructions */
+        statistics::Scalar numUserInsts;
+
+        /* Number of kernel-mode instructions */
+        statistics::Formula numKernelInsts;
 
         /* Number of instructions committed by type (OpClass) */
         statistics::Vector committedInstType;
