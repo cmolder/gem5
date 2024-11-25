@@ -158,12 +158,6 @@ class SimpleMemory : public AbstractMemory
 
     EventFunctionWrapper releaseEvent;
 
-    /**
-     * Dequeue a packet from our internal packet queue and move it to
-     * the port where it will be sent as soon as possible.
-     */
-    void dequeue();
-
     EventFunctionWrapper dequeueEvent;
 
     /**
@@ -197,6 +191,12 @@ class SimpleMemory : public AbstractMemory
             MemBackdoorPtr &backdoor);
     bool recvTimingReq(PacketPtr pkt);
     void recvRespRetry();
+
+    /**
+     * Dequeue a packet from our internal packet queue and move it to
+     * the port where it will be sent as soon as possible.
+     */
+    void dequeue();
 };
 
 } // namespace memory
